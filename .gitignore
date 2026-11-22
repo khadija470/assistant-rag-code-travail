@@ -1,0 +1,11 @@
+# Environnement Python
+.venv/
+__pycache__/
+*.pyc
+
+# Secrets : ne jamais pousser la clé d'API
+.env
+
+# Fichiers lourds ou générés
+data/vectorstore/
+*.log
