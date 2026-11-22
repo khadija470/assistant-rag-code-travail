@@ -63,3 +63,16 @@ Difficultés traitées :
 - une phrase comme « au titre de… » ne doit pas être confondue avec un intitulé « TITRE ».
 
 Contrôles automatiques : 462 articles, aucun manquant, aucun doublon.
+
+### Ce que l'étape 1 m'a appris
+
+| Question posée | Passage « congé payé » | Rang |
+|---|---|---|
+| « Combien de jours de vacances un employé peut-il prendre ? » | 0,463 | 2e (derrière « 40 heures par semaine ») |
+| « Le salarié a-t-il droit à des congés chaque année ? » | 0,783 | 1er |
+
+Le modèle `paraphrase-multilingual-MiniLM-L12-v2` retrouve très bien un passage
+quand la question lui ressemble, mais se trompe quand l'utilisateur emploie
+d'autres mots (« vacances » au lieu de « congé payé »). Conséquences pour la suite :
+récupérer plusieurs passages (top-k), choisir un modèle entraîné pour la recherche,
+combiner recherche par le sens et par mots-clés, et évaluer avec des questions reformulées.
