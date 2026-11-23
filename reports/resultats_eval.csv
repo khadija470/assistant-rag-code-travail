@@ -1,0 +1,84 @@
+﻿id;type;question;repondable;articles_attendus;articles_recuperes;articles_cites;recall5;recall5_strict;citation_correcte;citations_invalides;abstention;abstention_correcte;exactitude;completude;fidelite;commentaire_juge;duree_llm_s;tokens;reponse;verif_humaine
+F01;factuelle;Quelle est la durée du congé de maternité ?;True;[277];[280, 277, 274, 249, 253];[277];1;1;1;[];0;1;1;1;2;"Réponse correcte mais omet la mention ""ou aux couches"" dans les cas de prolongation.";1.77;1697;"La durée du congé de maternité est de dix‑huit (18) semaines consécutives, dont douze (12) semaines après l’accouchement ; elle peut être prolongée de trois (3) semaines en cas de maladie liée à la grossesse, de complications, de grossesse multiple ou pour des raisons de santé de l’enfant[EXTRAIT 2].";
+F02;factuelle;Quelle est la durée légale du travail par semaine ?;True;[241];[241, 246, 281, 245, 153];[241];1;1;1;[];0;1;2;2;2;Réponse exacte, complète et fidèle aux extraits.;1.14;1678;"La durée légale du travail dans les établissements soumis au Code du travail du Sénégal ne peut excéder quarante (40) heures par semaine [EXTRAIT 1].  
+
+*Exception :* dans les exploitations agricoles, la durée est fixée à deux mille trois cent quatre (2 304) heures par an, et un arrêté ministériel détermine la durée hebdomadaire selon les saisons [EXTRAIT 1].";
+F03;factuelle;Combien de temps dure au minimum le repos hebdomadaire ?;True;[246];[246, 274, 245, 241, 247];[246];1;1;1;[];0;1;2;1;2;Réponse correcte sur la durée mais omet les précisions sur le jour habituel et l’obligation du repos.;0.89;1231;Le repos hebdomadaire doit être d’au moins vingt‑quatre (24) heures consécutives chaque semaine. [EXTRAIT 1];
+F04;factuelle;Quelle est la durée maximale d'un contrat d'engagement à l'essai ?;True;[94];[94, 93, 95, 96, 176];[94];1;1;1;[];0;1;2;2;2;Réponse correcte, complète et fidèle aux extraits.;5.13;1194;"La durée maximale d’un contrat d’engagement à l’essai, renouvellement et prolongation compris, est de six (06) mois ; il ne peut être conclu pour une période supérieure à ce délai, même si la mise à l’épreuve de la personne engagée le justifierait. [EXTRAIT 1]";
+F05;factuelle;Pour combien de temps les délégués du personnel sont-ils élus ?;True;[60];[60, 61, 62, 168, 63];[60];1;1;1;[];0;1;2;2;2;Réponse exacte, complète et entièrement tirée des extraits fournis.;9.4;1564;"Les délégués du personnel sont élus pour un mandat de trois (03) ans, renouvelable ; à défaut d’élections de renouvellement, ils restent en fonction jusqu’aux prochaines élections. [EXTRAIT 1]";
+P01;procedure;Comment un salarié doit-il notifier sa démission à son employeur ?;True;[164];[164, 149, 163, 126, 162];[163, 164];1;1;1;[];0;1;2;2;2;Réponse conforme à la référence, complète et entièrement appuyée par les extraits.;3.35;1126;"Le salarié doit notifier sa démission **par écrit** à son employeur.  
+Cette notification peut être effectuée :
+
+* **par lettre recommandée avec accusé de réception**, ou  
+* **par remise directe contre accusé de réception**.  
+
+[EXTRAIT 1]
+
+La démission doit être une manifestation claire, volontaire et non équivoque de la volonté du travailleur de mettre fin à son contrat.  
+
+[EXTRAIT 3]";
+P02;procedure;Quelles sont les étapes d'une rupture amiable du contrat de travail ?;True;[127, 129];[127, 129, 128, 131, 110];[127, 128, 129, 131];1;1;1;[];0;1;1;2;2;L’assistant ajoute une étape sur le plan social qui n’est pas dans la réponse de référence, ce qui constitue une légère imprécision, mais le reste est complet et fidèle aux extraits.;4.9;1565;"Les étapes d’une rupture amiable du contrat de travail sont :
+
+1. **Accord des parties** – L’employeur et le travailleur décident d’un commun accord de mettre fin au contrat et rédigent une convention de rupture contenant, entre autres, l’identité des deux parties, l’ancienneté du travailleur, son emploi et sa catégorie professionnelle, les indemnités éventuelles et la date de prise d’effet ; le travailleur peut se faire assister par une personne de son choix [EXTRAIT 1].
+
+2. **Éventuelle candidature au plan social** – Si le travailleur souhaite bénéficier d’un plan social, il adresse sa candidature par écrit à l’employeur ; l’acceptation conduit à la conclusion d’une convention de rupture amiable comportant les mêmes mentions que celles prévues à l’article 127 [EXTRAIT 4].
+
+3. **Enregistrement de la convention** – L’employeur dépose la convention de rupture, en quatre exemplaires, auprès de l’inspection du travail et de la sécurité sociale du ressort pour son enregistrement [EXTRAIT 2].
+
+4. **Indemnisation** – Le travailleur perçoit, en plus des droits convenus, une indemnité de rupture amiable qui ne peut être inférieure à l’indemnité de licenciement (calculée selon l’ancienneté, avec prise en compte des fractions de mois et de jours pour les salariés de moins de douze mois) [EXTRAIT 3].
+
+Ces étapes constituent la procédure prévue par le Code du travail sénégalais pour une rupture amiable du contrat de travail.";
+P03;procedure;Comment l'employeur doit-il convoquer un travailleur à un entretien préalable ?;True;[238];[238, 239, 268, 436, 112];[238];1;1;1;[];0;1;2;2;2;Réponse conforme à la référence, complète et tirée des extraits.;8.39;1540;"L’employeur doit adresser au travailleur une convocation :
+
+- Par lettre recommandée avec accusé de réception **ou** remise directe contre accusé de réception ;  
+- En indiquant clairement la date, l’heure et le lieu de l’entretien ;  
+- En précisant les faits qui sont reprochés au travailleur ;  
+- En l’informant de la possibilité de se faire assister par un délégué du personnel, un représentant syndical ou toute autre personne de son choix ;  
+- L’entretien ne peut se tenir avant l’expiration d’un délai de cinq (05) jours ouvrables à compter de la réception de la convocation par le travailleur . [EXTRAIT 1]";
+P04;procedure;Quelle est la procédure d'élaboration du règlement intérieur ?;True;[233];[233, 232, 379, 378, 345];[233];1;1;1;[];0;1;2;2;2;Réponse conforme à la référence et aux extraits.;7.88;1441;"La procédure d’élaboration du règlement intérieur se déroule ainsi :
+
+1. **Communication du projet** – L’employeur transmet le projet de règlement intérieur aux délégués du personnel.  
+2. **Dépot du projet et des avis** – Le projet, ainsi que les avis et suggestions des délégués, sont déposés auprès de l’inspection du travail et de la sécurité sociale du ressort.  
+3. **Examen par l’inspecteur** – L’inspecteur du travail et de la sécurité sociale peut exiger le retrait des dispositions qui ne figurent pas dans l’alinéa premier de l’article 232 et la modification de toute disposition contraire aux lois et règlements en vigueur.  
+4. **Modalités d’application** – Les modalités de communication, de dépôt et d’affichage du règlement intérieur, ainsi que le nombre de travailleurs au‑delà duquel le règlement devient obligatoire, sont fixées par arrêté du Ministre chargé du Travail.  
+
+Ces étapes sont décrites dans l’article 233 du Code du travail : [EXTRAIT 1].";
+C01;conditions;Combien de fois peut-on renouveler un contrat à durée déterminée et pour quelle durée maximale ?;True;[100];[100, 103, 101, 98, 102];[100];1;1;1;[];0;1;2;1;2;Réponse correcte mais omet l'exception du CDD pour ouvrage déterminé qui peut dépasser 2 ans mais ne peut être ni renouvelé ni prolongé.;8.71;1525;"Le contrat à durée déterminée ne peut être renouvelé qu’une seule fois ; il ne peut donc faire l’objet que d’un **unique renouvellement** [EXTRAIT 1].  
+
+La durée maximale d’un contrat à durée déterminée est de **deux (02) ans** [EXTRAIT 1].  
+
+Lorsque le contrat est renouvelé (ou prolongé), la **durée cumulée** de la relation de travail entre le même salarié et le même employeur, renouvellement et prolongation compris, ne peut pas dépasser **quatre (04) ans** [EXTRAIT 1].  
+
+Ainsi, on peut renouveler le CDD une seule fois, chaque période ne pouvant excéder 2 ans, et la durée totale (initiale + renouvellement) ne doit pas dépasser 4 ans.";
+C02;conditions;L'employeur peut-il imposer le télétravail sans l'accord du salarié ?;True;[269];[269, 273, 271, 3, 270];[269];1;1;1;[];0;1;2;2;2;Réponse conforme, complète et fidèle aux extraits.;10.84;1521;"L’employeur ne peut pas imposer le télétravail de façon générale : le recours au télétravail « s’effectue d’un commun accord par écrit », par exemple dans le contrat de travail ou un avenant [EXTRAIT 1].
+
+Cependant, lorsqu’il existe des circonstances exceptionnelles – notamment une épidémie, une pandémie ou un cas de force majeure – l’employeur peut, dans le cadre d’un aménagement du poste, mettre en place le télétravail sans l’accord préalable du salarié. Cette mise en œuvre relève alors du pouvoir de direction de l’employeur et n’est pas subordonnée à l’accord du travailleur, à condition que l’employeur en informe le salarié par écrit [EXTRAIT 1].";
+C03;conditions;Dans quelles conditions une femme enceinte peut-elle démissionner sans préavis ?;True;[278];[278, 126, 275, 144, 163];[278];1;1;1;[];0;1;2;2;2;Réponse exacte, complète et entièrement fondée sur les extraits fournis.;10.55;1077;Une femme enceinte peut démissionner sans préavis lorsqu’elle justifie son état de grossesse : soit son état a été constaté médicalement, soit la grossesse est apparente. Dans ces cas, elle n’est pas tenue d’observer le préavis et n’a pas à payer d’indemnité de rupture ni de dommages‑intérêts. [EXTRAIT 1];
+C04;conditions;Dans quels cas une différence de traitement entre travailleurs n'est-elle pas une discrimination ?;True;[10];[10, 14, 3, 9, 11];[10];1;1;1;[];0;1;2;2;2;Réponse conforme, complète et fidèle aux extraits.;1.32;1599;"Une différence de traitement n’est pas considérée comme une discrimination lorsqu’elle :
+
+* **Répond à des exigences professionnelles essentielles et déterminantes**, que l’objectif poursuivi est légitime et que les exigences sont proportionnées ; [EXTRAIT 1]  
+* **Est fondée sur l’âge, l’état de santé ou le handicap**, à condition qu’elle soit justifiée par les conditions de travail, la protection de la sécurité et de la santé du jeune travailleur, ou par une inaptitude médicale constatée, ou qu’elle constitue une mesure prise en faveur des personnes handicapées pour favoriser l’égalité des chances et de traitement. [EXTRAIT 1]";
+M01;multi_passages;Après son congé de maternité, de quels droits une mère bénéficie-t-elle pour allaiter son enfant ?;True;[277, 280];[280, 277, 249, 278, 250];[280];1;1;1;[];0;1;2;2;2;Réponse exacte, complète et entièrement fondée sur les extraits fournis.;10.59;1734;"Après la fin du congé de maternité, la mère bénéficie :
+
+- D’un repos journalier dédié à l’allaitement pendant une période de vingt (20) mois ; la durée totale de ce repos ne peut excéder une heure par journée de travail et par nourrisson [EXTRAIT 1].
+- Ce repos est considéré comme du temps de travail et est donc rémunéré comme tel [EXTRAIT 1].
+- L’employeur est interdit de licencier la femme pendant cette période pour tout motif lié à la grossesse, à la naissance ou à l’allaitement [EXTRAIT 1].
+- La mère peut, pendant cette période, démissionner sans préavis et sans devoir payer d’indemnité de rupture ou de dommages‑intérêts [EXTRAIT 1].";
+M02;multi_passages;En cas de rupture amiable d'un CDI, quelle indemnité minimale le salarié reçoit-il et que doit faire l'employeur de la convention ?;True;[128, 129];[127, 128, 78, 129, 78];[128, 129];1;1;1;[];0;1;2;2;2;Réponse conforme à la référence, complète et entièrement appuyée par les extraits.;9.12;1804;"En cas de rupture amiable d’un CDI, le salarié perçoit une **indemnité de rupture amiable qui ne peut être inférieure à l’indemnité de licenciement** (et, s’il n’a pas atteint 12 mois d’ancienneté, elle est calculée en tenant compte des fractions de mois et de jours) [EXTRAIT 2].
+
+L’employeur doit **déposer la convention de rupture amiable**, en quatre exemplaires, auprès de l’inspection du travail et de la sécurité sociale du ressort, afin qu’elle soit enregistrée [EXTRAIT 4].";
+M03;multi_passages;Un télétravailleur a-t-il les mêmes horaires que les autres salariés, et un accident chez lui est-il un accident du travail ?;True;[270, 272];[272, 271, 270, 273, 3];[270, 272];1;1;1;[];0;1;2;2;2;Réponse correcte, complète et entièrement fondée sur les extraits fournis.;14.86;1427;"Oui, le télétravailleur doit respecter les mêmes horaires que le salarié travaillant dans les locaux de l’entreprise : « La durée de travail du télétravailleur est identique à celle du travailleur occupé dans les locaux de l’entreprise… les dispositions relatives… à la durée maximale quotidienne, aux durées maximales hebdomadaires, au temps de repos et au décompte des heures de travail s’appliquent au télétravailleur » [EXTRAIT 3].
+
+Oui, un accident survenu chez le télétravailleur, sur le lieu où il exerce son télétravail, est présumé être un accident du travail : « L'accident survenu sur le lieu où est exercé le télétravail… est présumé être un accident du travail » [EXTRAIT 1].";
+U01;absente;Quel est le taux de cotisation à la caisse de retraite IPRES ?;False;[];[228, 224, 219, 216, 135];[];;;;[];1;1;;;;;12.45;1167;Les extraits du Code du travail dont je dispose ne permettent pas de répondre à cette question.;
+U02;absente;Quel est le prix d'un billet d'avion Dakar-Paris ?;False;[];[445, 91, 402, 258, 78];[];;;;[];1;1;;;;;2.1;1147;Les extraits du Code du travail dont je dispose ne permettent pas de répondre à cette question.;
+R01;reformulee;Mon patron peut-il me faire bosser 50 heures par semaine sans rien payer en plus ?;True;[241, 244];[251, 242, 243, 298, 246];[242, 246, 298];0;0;0;[];1;0;0;0;1;L’assistant ne répond pas à la question centrale (la durée légale de 40 h et l’obligation de majoration), omet l’essentiel et conclut à tort qu’on ne peut pas déterminer la réponse à partir des extraits, alors que la référence indique clairement la règle.;5.09;2014;"Les extraits du Code du travail dont je dispose ne permettent pas de répondre à cette question. En effet :
+
+- L’article 242 autorise les employeurs à mettre en place des horaires individualisés, « dans la limite d’un nombre d’heures fixé par arrêté du Ministre chargé du Travail », et ces heures supplémentaires peuvent être reportées d’une semaine à l’autre sans paiement supplémentaire [EXTRAIT 2].
+
+- L’article 298 interdit à un travailleur d’effectuer des travaux rémunérés au‑delà de « la durée maximale du travail fixée pour l’entreprise » [EXTRAIT 4].
+
+- L’article 246 impose un repos hebdomadaire d’au moins 24 heures consécutives [EXTRAIT 5].
+
+Ces dispositions indiquent qu’il existe des limites légales (déterminées par arrêté ministériel ou par la durée maximale fixée pour l’entreprise) et un repos obligatoire, mais les extraits ne précisent pas la valeur de la durée maximale hebdomadaire ni le nombre d’heures pouvant être imposées sans rémunération supplémentaire. Par conséquent, il n’est pas possible de déterminer, à partir des seuls extraits fournis, si votre employeur peut vous faire travailler 50 heures par semaine sans rémunération additionnelle.";
+R02;reformulee;Combien de jours de vacances j'accumule chaque mois ?;True;[249];[249, 253, 246, 248, 199];[249];1;1;1;[];0;1;2;1;2;Réponse correcte sur les deux jours mensuels et l'exception collective, mais omet le jour supplémentaire pour le jeune travailleur.;10.48;1604;"Le droit au congé payé s’acquiert à raison de **deux (02) jours ouvrables par mois de service effectif** ; c’est la règle générale, sauf si une convention collective prévoit des dispositions plus favorables [EXTRAIT 1].";

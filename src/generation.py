@@ -59,7 +59,7 @@ def verifier_citations(reponse: str, nb_extraits: int) -> list[int]:
     return sorted(n for n in cites if n < 1 or n > nb_extraits)
 
 
-def repondre(question: str, k: int = TOP_K) -> dict:
+def repondre(question: str, k: int = TOP_K, inclure_textes: bool = False) -> dict:
     if not GROQ_API_KEY:
         raise RuntimeError("GROQ_API_KEY manquante : ajoute ta clé dans le fichier .env")
 
@@ -86,7 +86,9 @@ def repondre(question: str, k: int = TOP_K) -> dict:
     )
     duree_llm = time.perf_counter() - debut
 
-    reponse = completion.choices[0].message.content.strip()
+    reponse = (completion.choices[0].message.content or "").strip()
+    # Certains modèles écrivent 【EXTRAIT 2】 au lieu de [EXTRAIT 2] : on uniformise.
+    reponse = reponse.replace("【", "[").replace("】", "]")
     citations_invalides = verifier_citations(reponse, len(passages))
 
     return {
@@ -94,7 +96,8 @@ def repondre(question: str, k: int = TOP_K) -> dict:
         "reponse": reponse,
         "sources": [
             {"extrait": i, "article": p["numero"], "titre": p["titre_article"],
-             "citation": p["citation"], "score": round(float(p["score"]), 3)}
+             "citation": p["citation"], "score": round(float(p["score"]), 3),
+             **({"texte": p["texte"]} if inclure_textes else {})}
             for i, p in enumerate(passages, start=1)
         ],
         "citations_invalides": citations_invalides,

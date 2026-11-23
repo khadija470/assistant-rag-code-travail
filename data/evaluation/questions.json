@@ -1,0 +1,122 @@
+[
+  {
+    "id": "F01", "type": "factuelle", "answerable": true,
+    "question": "Quelle est la durée du congé de maternité ?",
+    "reference": "Dix-huit (18) semaines consécutives, dont douze (12) semaines après l'accouchement. Prolongation possible de trois (3) semaines en cas de maladie liée à la grossesse ou aux couches, de complications, de grossesse multiple ou pour la santé de l'enfant.",
+    "articles_attendus": [277]
+  },
+  {
+    "id": "F02", "type": "factuelle", "answerable": true,
+    "question": "Quelle est la durée légale du travail par semaine ?",
+    "reference": "Quarante (40) heures par semaine. Dans les exploitations agricoles, 2 304 heures par an.",
+    "articles_attendus": [241]
+  },
+  {
+    "id": "F03", "type": "factuelle", "answerable": true,
+    "question": "Combien de temps dure au minimum le repos hebdomadaire ?",
+    "reference": "Au minimum vingt-quatre (24) heures consécutives par semaine, en principe le dimanche. Le repos hebdomadaire est obligatoire.",
+    "articles_attendus": [246]
+  },
+  {
+    "id": "F04", "type": "factuelle", "answerable": true,
+    "question": "Quelle est la durée maximale d'un contrat d'engagement à l'essai ?",
+    "reference": "Six (6) mois au maximum, renouvellement et prolongation compris, et jamais plus que le délai nécessaire pour mettre à l'épreuve la personne engagée.",
+    "articles_attendus": [94]
+  },
+  {
+    "id": "F05", "type": "factuelle", "answerable": true,
+    "question": "Pour combien de temps les délégués du personnel sont-ils élus ?",
+    "reference": "Pour un mandat de trois (3) ans, renouvelable. Sans élections de renouvellement, ils restent en fonction jusqu'aux prochaines élections.",
+    "articles_attendus": [60]
+  },
+  {
+    "id": "P01", "type": "procedure", "answerable": true,
+    "question": "Comment un salarié doit-il notifier sa démission à son employeur ?",
+    "reference": "Par écrit, soit par lettre recommandée avec accusé de réception, soit par remise directe contre accusé de réception.",
+    "articles_attendus": [164]
+  },
+  {
+    "id": "P02", "type": "procedure", "answerable": true,
+    "question": "Quelles sont les étapes d'une rupture amiable du contrat de travail ?",
+    "reference": "L'employeur et le travailleur concluent une convention de rupture (identité des parties, ancienneté, emploi et catégorie, indemnités éventuelles, date de prise d'effet) ; le travailleur peut se faire assister par une personne de son choix ; l'employeur dépose la convention en quatre (4) exemplaires à l'inspection du travail et de la sécurité sociale du ressort pour enregistrement.",
+    "articles_attendus": [127, 129]
+  },
+  {
+    "id": "P03", "type": "procedure", "answerable": true,
+    "question": "Comment l'employeur doit-il convoquer un travailleur à un entretien préalable ?",
+    "reference": "Par lettre recommandée avec accusé de réception ou remise directe contre accusé de réception. La convocation précise la date, l'heure, le lieu, les faits reprochés et la possibilité de se faire assister (délégué du personnel, représentant syndical ou personne de son choix). L'entretien ne peut avoir lieu qu'après un délai de cinq (5) jours ouvrables à compter de la réception de la convocation.",
+    "articles_attendus": [238]
+  },
+  {
+    "id": "P04", "type": "procedure", "answerable": true,
+    "question": "Quelle est la procédure d'élaboration du règlement intérieur ?",
+    "reference": "L'employeur communique le projet aux délégués du personnel ; le projet et leurs avis sont déposés à l'inspection du travail et de la sécurité sociale du ressort ; l'inspecteur exige le retrait des dispositions étrangères au contenu autorisé et la modification des dispositions contraires aux lois. Les modalités de dépôt et d'affichage et le seuil d'effectif rendant le règlement obligatoire sont fixés par arrêté.",
+    "articles_attendus": [233]
+  },
+  {
+    "id": "C01", "type": "conditions", "answerable": true,
+    "question": "Combien de fois peut-on renouveler un contrat à durée déterminée et pour quelle durée maximale ?",
+    "reference": "Un CDD ne peut dépasser deux (2) ans et ne peut faire l'objet que d'un seul renouvellement ou d'une seule prolongation ; la durée cumulée avec le même employeur ne peut excéder quatre (4) ans. Exception : le CDD conclu pour un ouvrage déterminé dont la durée ne peut être fixée précisément peut dépasser deux ans, mais ne peut alors être ni renouvelé ni prolongé.",
+    "articles_attendus": [100]
+  },
+  {
+    "id": "C02", "type": "conditions", "answerable": true,
+    "question": "L'employeur peut-il imposer le télétravail sans l'accord du salarié ?",
+    "reference": "En principe non : le télétravail s'effectue d'un commun accord par écrit (contrat ou avenant). Exception : en cas de circonstances exceptionnelles (épidémie, pandémie) ou de force majeure, l'employeur peut l'imposer pour assurer la continuité de l'activité et protéger les travailleurs, sans accord préalable ; il en informe le travailleur par écrit.",
+    "articles_attendus": [269]
+  },
+  {
+    "id": "C03", "type": "conditions", "answerable": true,
+    "question": "Dans quelles conditions une femme enceinte peut-elle démissionner sans préavis ?",
+    "reference": "Lorsque son état a été constaté médicalement ou que sa grossesse est apparente. Elle peut alors démissionner sans préavis et sans payer d'indemnité de rupture ni de dommages-intérêts.",
+    "articles_attendus": [278]
+  },
+  {
+    "id": "C04", "type": "conditions", "answerable": true,
+    "question": "Dans quels cas une différence de traitement entre travailleurs n'est-elle pas une discrimination ?",
+    "reference": "Lorsqu'elle répond à des exigences professionnelles essentielles et déterminantes, avec un objectif légitime et des exigences proportionnées (notamment distinctions fondées sur l'âge, l'état de santé, le handicap) ; différences liées à l'âge justifiées par la protection du jeune travailleur ; différences liées à une inaptitude médicalement constatée ; mesures en faveur des personnes handicapées.",
+    "articles_attendus": [10]
+  },
+  {
+    "id": "M01", "type": "multi_passages", "answerable": true,
+    "question": "Après son congé de maternité, de quels droits une mère bénéficie-t-elle pour allaiter son enfant ?",
+    "reference": "Pendant vingt (20) mois après la fin du congé de maternité (lui-même de 18 semaines), elle a droit à des repos journaliers pour allaitement, au plus une heure par journée de travail et par nourrisson, comptés et rémunérés comme temps de travail ; l'employeur ne peut pas la licencier pendant cette période pour des motifs liés à la grossesse, la naissance ou l'allaitement ; elle peut démissionner sans préavis ni indemnité.",
+    "articles_attendus": [280, 277]
+  },
+  {
+    "id": "M02", "type": "multi_passages", "answerable": true,
+    "question": "En cas de rupture amiable d'un CDI, quelle indemnité minimale le salarié reçoit-il et que doit faire l'employeur de la convention ?",
+    "reference": "Le travailleur reçoit, outre les droits convenus, une indemnité de rupture amiable au moins égale à l'indemnité de licenciement (calculée au prorata s'il a moins de 12 mois d'ancienneté). L'employeur dépose la convention en quatre (4) exemplaires à l'inspection du travail et de la sécurité sociale du ressort pour enregistrement.",
+    "articles_attendus": [128, 129]
+  },
+  {
+    "id": "M03", "type": "multi_passages", "answerable": true,
+    "question": "Un télétravailleur a-t-il les mêmes horaires que les autres salariés, et un accident chez lui est-il un accident du travail ?",
+    "reference": "Oui : sa durée de travail est identique à celle des salariés dans les locaux, et les règles sur les durées maximales, le repos et le décompte des heures s'appliquent. Un accident survenu sur le lieu du télétravail, par le fait ou à l'occasion de l'activité professionnelle, est présumé être un accident du travail au sens du Code de la sécurité sociale.",
+    "articles_attendus": [270, 272]
+  },
+  {
+    "id": "U01", "type": "absente", "answerable": false,
+    "question": "Quel est le taux de cotisation à la caisse de retraite IPRES ?",
+    "reference": "Information absente du Code du travail (relève de la réglementation de la sécurité sociale et des retraites) : l'assistant doit dire qu'il ne peut pas répondre à partir des extraits.",
+    "articles_attendus": []
+  },
+  {
+    "id": "U02", "type": "absente", "answerable": false,
+    "question": "Quel est le prix d'un billet d'avion Dakar-Paris ?",
+    "reference": "Question hors sujet : l'assistant doit dire qu'il ne peut pas répondre à partir des extraits du Code du travail.",
+    "articles_attendus": []
+  },
+  {
+    "id": "R01", "type": "reformulee", "answerable": true,
+    "question": "Mon patron peut-il me faire bosser 50 heures par semaine sans rien payer en plus ?",
+    "reference": "Non : la durée légale est de 40 heures par semaine ; les heures effectuées au-delà sont des heures supplémentaires qui donnent lieu à une majoration de salaire (taux et plafonds fixés par convention collective, accord d'établissement ou décret).",
+    "articles_attendus": [241, 244]
+  },
+  {
+    "id": "R02", "type": "reformulee", "answerable": true,
+    "question": "Combien de jours de vacances j'accumule chaque mois ?",
+    "reference": "Deux (2) jours ouvrables de congé payé par mois de service effectif, sauf conventions collectives plus favorables ; un jour supplémentaire par mois pour le jeune travailleur.",
+    "articles_attendus": [249]
+  }
+]

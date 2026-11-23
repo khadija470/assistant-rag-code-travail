@@ -15,7 +15,7 @@ Projet construit étape par étape (RAG : *Retrieval-Augmented Generation*).
 - [x] Étape 2 — Extraire les 462 articles du Journal officiel (PDF sur deux colonnes)
 - [x] Étape 3 — Découper en passages et indexer dans PostgreSQL + pgvector
 - [x] Étape 4 — Générer des réponses sourcées avec un LLM (Groq) et les exposer dans une API FastAPI
-- [ ] Étape 5 — Évaluer sur ~20 questions (Recall@k, fidélité, abstention)
+- [x] Étape 5 — Évaluer sur 20 questions (Recall@5, citations, abstention, LLM juge)
 - [ ] Étape 6 — Garde-fous, function calling, observabilité
 
 ## Installation
@@ -144,7 +144,6 @@ script). Validation des entrées (Pydantic) et messages d'erreur clairs si la ba
 Les règles du prompt et la vérification des citations s'inspirent du projet RAG juridique
 réalisé par mon groupe de formation à Orange Digital Center, adaptés ici au Code du travail.
 
-
 ### Ce que l'étape 4 m'a appris
 
 - Question : « Quelle est la durée du congé de maternité ? »
@@ -155,3 +154,34 @@ réalisé par mon groupe de formation à Orange Digital Center, adaptés ici au 
 - Le modèle prévu au départ (`llama-3.3-70b-versatile`) avait été retiré par Groq (erreur 404) :
   le nom du modèle est donc configurable dans `.env`, et `src/lister_modeles_groq.py`
   vérifie qu'il existe toujours.
+
+## Étape 5 — Évaluation sur 20 questions
+
+```bash
+python src/evaluate.py
+```
+
+**Jeu de test (`data/evaluation/questions.json`)** : 20 questions, chacune avec une réponse
+de référence rédigée à partir du texte de loi et le ou les articles attendus.
+
+| Type | Nombre | Ce qu'on teste |
+|---|---|---|
+| factuelle | 5 | retrouver une information explicite |
+| procedure | 4 | restituer des étapes sans en oublier |
+| conditions | 4 | combiner les conditions et exceptions |
+| multi_passages | 3 | réponse qui demande deux articles |
+| absente | 2 | refuser de répondre plutôt qu'inventer |
+| reformulee | 2 | langage courant (« bosser », « vacances ») |
+
+**Mesures** :
+- *Recherche* : Recall@5 (un article attendu parmi les 5 passages retrouvés) et Recall@5 strict
+  (tous les articles attendus) ;
+- *Réponse* : citation d'un article attendu, citations inexistantes, abstention correcte sur
+  les questions hors corpus, abstentions inutiles ;
+- *Qualité* : exactitude, complétude et fidélité (0 à 2) notées par un **LLM juge** qui compare
+  la réponse à la référence et aux extraits.
+
+**Limite assumée** : le juge est le même modèle que l'assistant et peut se tromper. Une partie
+des notes est donc vérifiée à la main (colonne `verif_humaine` de `reports/resultats_eval.csv`).
+
+Résultats : `reports/resume_eval.md` (résumé) et `reports/resultats_eval.csv` (détail par question).

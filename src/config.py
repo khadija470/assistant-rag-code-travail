@@ -30,7 +30,7 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 # Le nom du modèle change avec le temps : vérifier la liste avec
 #   python src/lister_modeles_groq.py
 # et le modifier dans le fichier .env si besoin.
-GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
 
 # Nombre de passages envoyés au LLM
 TOP_K = 5
