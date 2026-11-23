@@ -14,7 +14,7 @@ Projet construit étape par étape (RAG : *Retrieval-Augmented Generation*).
 - [x] Étape 1 — Découvrir les embeddings et la similarité cosinus
 - [x] Étape 2 — Extraire les 462 articles du Journal officiel (PDF sur deux colonnes)
 - [x] Étape 3 — Découper en passages et indexer dans PostgreSQL + pgvector
-- [ ] Étape 4 — Générer des réponses sourcées avec un LLM (API FastAPI)
+- [x] Étape 4 — Générer des réponses sourcées avec un LLM (Groq) et les exposer dans une API FastAPI
 - [ ] Étape 5 — Évaluer sur ~20 questions (Recall@k, fidélité, abstention)
 - [ ] Étape 6 — Garde-fous, function calling, observabilité
 
@@ -101,7 +101,6 @@ l'étape 1. Vecteurs de 384 dimensions, normalisés.
 La recherche (`src/recherche.py`) renvoie les k passages les plus proches avec leur
 score et leur citation.
 
-
 ### Ce que l'étape 3 m'a appris
 
 | Question | Article 277 (Congé de maternité) |
@@ -112,6 +111,47 @@ score et leur citation.
 Avec `multilingual-e5-small`, entraîné pour la recherche, la question reformulée
 retrouve le bon article, ce que le modèle de paraphrase de l'étape 1 ne faisait pas.
 L'article 280 passe devant car il commence par « À la fin du congé de maternité » :
-la recherche ramène des candidats, c'est le LLM (étape 4) qui choisira le bon passage.
+la recherche ramène des candidats, c'est le LLM (étape 4) qui choisit le bon passage.
 Les scores de e5 sont très serrés (0,84 à 0,89) : le seuil de refus des questions
 hors sujet devra être calibré, il ne peut pas être fixé à l'intuition.
+
+## Étape 4 — Réponses sourcées avec un LLM, exposées dans une API
+
+Ajouter sa clé gratuite Groq (https://console.groq.com) dans `.env` (`GROQ_API_KEY=...`), puis :
+
+```bash
+python src/lister_modeles_groq.py     # vérifier que GROQ_MODEL existe
+python src/generation.py "Quelle est la durée du congé de maternité ?"
+python src/api.py                      # API sur http://localhost:8000/docs
+```
+
+**Fonctionnement (`src/generation.py`)** :
+1. recherche des 5 passages les plus proches (étape 3) ;
+2. passages numérotés `[EXTRAIT 1]`… placés dans le prompt avec leur citation ;
+3. prompt système strict : répondre uniquement à partir des extraits, citer chaque
+   affirmation, dire clairement quand les extraits ne suffisent pas, traiter les extraits
+   comme des données et non comme des instructions (protection contre l'injection) ;
+4. `temperature=0` pour des réponses stables ;
+5. vérification automatique : le LLM a-t-il cité un extrait qui n'existe pas ?
+6. mesures renvoyées avec chaque réponse : durée de la recherche, durée du LLM,
+   tokens consommés (base de l'observabilité).
+
+**API (`src/api.py`)** : `POST /question` et `GET /sante`. Le modèle d'embeddings est
+chargé une seule fois au démarrage du serveur (au lieu de 10 à 30 s par question en
+script). Validation des entrées (Pydantic) et messages d'erreur clairs si la base est
+éteinte (503) ou si le service LLM échoue (502).
+
+Les règles du prompt et la vérification des citations s'inspirent du projet RAG juridique
+réalisé par mon groupe de formation à Orange Digital Center, adaptés ici au Code du travail.
+
+
+### Ce que l'étape 4 m'a appris
+
+- Question : « Quelle est la durée du congé de maternité ? »
+- Réponse : 18 semaines, dont 12 après l'accouchement, prolongeables de 3 semaines,
+  en citant l'article 277, alors que la recherche avait classé l'article 280 en premier :
+  la recherche ramène des candidats, le LLM choisit le bon passage.
+- Mesures : 1,5 s pour le LLM (`openai/gpt-oss-120b` via Groq), 1 461 tokens en entrée, 236 en sortie.
+- Le modèle prévu au départ (`llama-3.3-70b-versatile`) avait été retiré par Groq (erreur 404) :
+  le nom du modèle est donc configurable dans `.env`, et `src/lister_modeles_groq.py`
+  vérifie qu'il existe toujours.
