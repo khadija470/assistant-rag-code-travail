@@ -1,0 +1,24 @@
+# Base de données PostgreSQL avec l'extension pgvector (recherche vectorielle).
+# Démarrer :  docker compose up -d
+# Arrêter  :  docker compose down        (les données sont conservées dans le volume)
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: rag_code_travail_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-rag}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-rag}
+      POSTGRES_DB: ${POSTGRES_DB:-rag}
+    ports:
+      # Port 5433 sur ta machine, pour ne pas entrer en conflit
+      # avec un PostgreSQL déjà installé sur le port 5432.
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-rag}"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  pgdata:

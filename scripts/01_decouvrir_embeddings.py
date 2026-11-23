@@ -29,7 +29,8 @@ PASSAGES = [
 ]
 
 # Une question formulée avec d'AUTRES mots que le passage qui y répond.
-QUESTION = "Le salarié a-t-il droit à des congés chaque année ?"
+QUESTION = "Combien de jours de vacances un employé peut-il prendre ?"
+
 
 def similarite_cosinus(a: np.ndarray, b: np.ndarray) -> float:
     """Mesure à quel point deux vecteurs pointent dans la même direction.

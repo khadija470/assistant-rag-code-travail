@@ -13,14 +13,14 @@ Projet construit étape par étape (RAG : *Retrieval-Augmented Generation*).
 
 - [x] Étape 1 — Découvrir les embeddings et la similarité cosinus
 - [x] Étape 2 — Extraire les 462 articles du Journal officiel (PDF sur deux colonnes)
-- [ ] Étape 3 — Indexer les passages dans PostgreSQL + pgvector
+- [x] Étape 3 — Découper en passages et indexer dans PostgreSQL + pgvector
 - [ ] Étape 4 — Générer des réponses sourcées avec un LLM (API FastAPI)
 - [ ] Étape 5 — Évaluer sur ~20 questions (Recall@k, fidélité, abstention)
 - [ ] Étape 6 — Garde-fous, function calling, observabilité
 
 ## Installation
 
-Prérequis : Python 3.11+, Git (et Docker à partir de l'étape 3).
+Prérequis : Python 3.11+, Git, Docker Desktop (à partir de l'étape 3).
 
 ```bash
 python -m venv .venv
@@ -41,6 +41,19 @@ python scripts/01_decouvrir_embeddings.py
 Le script transforme une question et quelques passages en vecteurs, puis les
 classe par similarité cosinus. On constate que le modèle compare le **sens** :
 la question « jours de vacances » retrouve le passage sur le « congé payé ».
+
+### Ce que l'étape 1 m'a appris
+
+| Question posée | Passage « congé payé » | Rang |
+|---|---|---|
+| « Combien de jours de vacances un employé peut-il prendre ? » | 0,463 | 2e (derrière « 40 heures par semaine ») |
+| « Le salarié a-t-il droit à des congés chaque année ? » | 0,783 | 1er |
+
+Le modèle `paraphrase-multilingual-MiniLM-L12-v2` retrouve très bien un passage
+quand la question lui ressemble, mais se trompe quand l'utilisateur emploie
+d'autres mots (« vacances » au lieu de « congé payé »). Conséquences pour la suite :
+récupérer plusieurs passages (top-k), choisir un modèle entraîné pour la recherche,
+combiner recherche par le sens et par mots-clés, et évaluer avec des questions reformulées.
 
 ## Étape 2 — Extraire les articles du Code du travail
 
@@ -64,15 +77,41 @@ Difficultés traitées :
 
 Contrôles automatiques : 462 articles, aucun manquant, aucun doublon.
 
-### Ce que l'étape 1 m'a appris
+## Étape 3 — Découper en passages et indexer dans pgvector
 
-| Question posée | Passage « congé payé » | Rang |
-|---|---|---|
-| « Combien de jours de vacances un employé peut-il prendre ? » | 0,463 | 2e (derrière « 40 heures par semaine ») |
-| « Le salarié a-t-il droit à des congés chaque année ? » | 0,783 | 1er |
+```bash
+cp .env.example .env          # puis compléter si besoin
+docker compose up -d          # démarre PostgreSQL + pgvector (port 5433)
+python src/chunking.py        # 462 articles -> 487 passages
+python src/indexation.py      # embeddings + enregistrement dans la table "passages"
+python src/recherche.py "Quelle est la durée du congé de maternité ?"
+```
 
-Le modèle `paraphrase-multilingual-MiniLM-L12-v2` retrouve très bien un passage
-quand la question lui ressemble, mais se trompe quand l'utilisateur emploie
-d'autres mots (« vacances » au lieu de « congé payé »). Conséquences pour la suite :
-récupérer plusieurs passages (top-k), choisir un modèle entraîné pour la recherche,
-combiner recherche par le sens et par mots-clés, et évaluer avec des questions reformulées.
+**Découpage (`src/chunking.py`)** : un article court reste un seul passage, pour ne pas
+couper son sens juridique. Les 13 articles longs sont coupés entre deux paragraphes,
+avec un chevauchement d'un paragraphe ; l'article 3 (Définitions) est coupé
+définition par définition. Chaque passage reçoit un en-tête
+(« Article 277 - Congé de maternité » + sa place dans le Code) avant d'être vectorisé.
+
+**Embeddings** : `intfloat/multilingual-e5-small`, un modèle entraîné pour la recherche
+question → passage (préfixes `query:` / `passage:`), choisi après les observations de
+l'étape 1. Vecteurs de 384 dimensions, normalisés.
+
+**Base vectorielle** : PostgreSQL 16 + pgvector, index HNSW en distance cosinus.
+La recherche (`src/recherche.py`) renvoie les k passages les plus proches avec leur
+score et leur citation.
+
+
+### Ce que l'étape 3 m'a appris
+
+| Question | Article 277 (Congé de maternité) |
+|---|---|
+| « Quelle est la durée du congé de maternité ? » | 2e (score 0,877) |
+| « Combien de semaines de congé bébé pour une maman ? » | 2e (score 0,863) |
+
+Avec `multilingual-e5-small`, entraîné pour la recherche, la question reformulée
+retrouve le bon article, ce que le modèle de paraphrase de l'étape 1 ne faisait pas.
+L'article 280 passe devant car il commence par « À la fin du congé de maternité » :
+la recherche ramène des candidats, c'est le LLM (étape 4) qui choisira le bon passage.
+Les scores de e5 sont très serrés (0,84 à 0,89) : le seuil de refus des questions
+hors sujet devra être calibré, il ne peut pas être fixé à l'intuition.
