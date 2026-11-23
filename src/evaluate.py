@@ -9,22 +9,25 @@ Sorties : reports/resultats_eval.csv   (une ligne par question, tout le détail)
 On évalue DEUX choses séparément, car elles échouent pour des raisons différentes :
 
 1. LA RECHERCHE (le "R") — mesure automatique, sans LLM
-   - Recall@5        : au moins un article attendu est dans les 5 passages retrouvés
+   - Recall@5        : au moins un article attendu est dans les passages retrouvés
+                       (5 passages, ou jusqu'à 8 avec la réécriture de la question)
    - Recall@5 strict : TOUS les articles attendus sont retrouvés (questions à plusieurs articles)
 
 2. LA RÉPONSE (le "G")
    - Citation correcte : le LLM cite au moins un extrait qui vient d'un article attendu
-   - Citations invalides : le LLM cite un extrait qui n'existe pas
+   - Citations invalides : le LLM cite un article absent des extraits fournis
    - Abstention : pour les questions hors corpus, l'assistant doit refuser de répondre
    - Exactitude, complétude, fidélité (0 à 2) : notées par un "LLM juge" qui compare la
      réponse à la référence et aux extraits. Limite connue : le juge est un LLM, il peut
      se tromper (et ici c'est le même modèle que celui qui répond). On vérifie donc
      quelques notes à la main (colonne verif_humaine du CSV).
 
-Lancer :  python src/evaluate.py
+Lancer :  python src/evaluate.py                    (avec réécriture de la question)
+          python src/evaluate.py --sans-reecriture   (sans, pour comparer)
 Durée  :  quelques minutes (pauses pour respecter les limites gratuites de Groq).
 """
 
+import argparse
 import csv
 import json
 import re
@@ -33,8 +36,8 @@ from collections import defaultdict
 
 import groq
 
-from config import GROQ_API_KEY, GROQ_MODEL, RACINE
-from generation import repondre
+from config import GROQ_API_KEY, GROQ_MODEL, RACINE, REECRITURE_REQUETE
+from generation import articles_cites, repondre
 
 QUESTIONS = RACINE / "data" / "evaluation" / "questions.json"
 DOSSIER = RACINE / "reports"
@@ -75,7 +78,7 @@ def appeler_avec_reessai(fonction, *args, **kwargs):
 
 def juger(client: groq.Groq, q: dict, resultat: dict) -> dict:
     extraits = "\n\n".join(
-        f"[EXTRAIT {s['extrait']}] Article {s['article']}\n{s['texte']}" for s in resultat["sources"]
+        f"[Art. {s['article']}]\n{s['texte']}" for s in resultat["sources"]
     )
     contenu = (
         f"QUESTION :\n{q['question']}\n\nRÉPONSE DE RÉFÉRENCE :\n{q['reference']}\n\n"
@@ -97,15 +100,12 @@ def juger(client: groq.Groq, q: dict, resultat: dict) -> dict:
         return {}
 
 
-def articles_cites(resultat: dict) -> list[int]:
-    numeros_extraits = {int(n) for n in re.findall(r"EXTRAIT\s+(\d+)", resultat["reponse"])}
-    return sorted({s["article"] for s in resultat["sources"] if s["extrait"] in numeros_extraits})
 
 
-def evaluer_question(client: groq.Groq, q: dict) -> dict:
-    resultat = appeler_avec_reessai(repondre, q["question"], inclure_textes=True)
+def evaluer_question(client: groq.Groq, q: dict, reecrire: bool) -> dict:
+    resultat = appeler_avec_reessai(repondre, q["question"], inclure_textes=True, reecrire=reecrire)
     recuperes = [s["article"] for s in resultat["sources"]]
-    cites = articles_cites(resultat)
+    cites = articles_cites(resultat["reponse"])
     attendus = set(q["articles_attendus"])
     abstention = bool(RE_ABSTENTION.search(resultat["reponse"]))
 
@@ -113,6 +113,7 @@ def evaluer_question(client: groq.Groq, q: dict) -> dict:
         "id": q["id"],
         "type": q["type"],
         "question": q["question"],
+        "question_reecrite": resultat["question_reecrite"] or "",
         "repondable": q["answerable"],
         "articles_attendus": sorted(attendus),
         "articles_recuperes": recuperes,
@@ -125,7 +126,8 @@ def evaluer_question(client: groq.Groq, q: dict) -> dict:
         "abstention_correcte": int(abstention != q["answerable"]),
         "exactitude": "", "completude": "", "fidelite": "", "commentaire_juge": "",
         "duree_llm_s": resultat["mesures"]["duree_llm_s"],
-        "tokens": resultat["mesures"]["tokens_entree"] + resultat["mesures"]["tokens_sortie"],
+        "tokens": (resultat["mesures"]["tokens_entree"] + resultat["mesures"]["tokens_sortie"]
+                   + resultat["mesures"]["tokens_reecriture"]),
         "reponse": resultat["reponse"],
         "verif_humaine": "",
     }
@@ -148,7 +150,7 @@ def taux(valeurs) -> str:
     return f"{sum(valeurs)}/{len(valeurs)} ({100 * sum(valeurs) / len(valeurs):.0f} %)" if valeurs else "—"
 
 
-def ecrire_resume(lignes: list[dict]) -> str:
+def ecrire_resume(lignes: list[dict], reecrire: bool) -> str:
     rep = [l for l in lignes if l["repondable"]]
     hors = [l for l in lignes if not l["repondable"]]
     par_type = defaultdict(list)
@@ -159,7 +161,7 @@ def ecrire_resume(lignes: list[dict]) -> str:
         "# Résultats de l'évaluation",
         "",
         f"Modèle : `{GROQ_MODEL}` — {len(lignes)} questions ({len(rep)} avec réponse dans le Code, "
-        f"{len(hors)} hors corpus).",
+        f"{len(hors)} hors corpus) — réécriture de la question : **{'oui' if reecrire else 'non'}**.",
         "",
         "## Recherche (retrieval)",
         f"- Recall@5 : **{taux([l['recall5'] for l in rep])}**",
@@ -167,7 +169,7 @@ def ecrire_resume(lignes: list[dict]) -> str:
         "",
         "## Réponses",
         f"- Citation d'un article attendu : **{taux([l['citation_correcte'] for l in rep])}**",
-        f"- Réponses contenant une citation inexistante : "
+        f"- Réponses citant un article absent des extraits : "
         f"{sum(1 for l in lignes if l['citations_invalides'])}/{len(lignes)}",
         f"- Abstention correcte sur les questions hors corpus : **{taux([l['abstention_correcte'] for l in hors])}**",
         f"- Abstentions inutiles (refus alors que la réponse existe) : {sum(l['abstention'] for l in rep)}/{len(rep)}",
@@ -201,6 +203,13 @@ def ecrire_resume(lignes: list[dict]) -> str:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Évaluer l'assistant RAG")
+    parser.add_argument("--sans-reecriture", action="store_true",
+                        help="désactiver la réécriture de la question (configuration de départ)")
+    args = parser.parse_args()
+    reecrire = REECRITURE_REQUETE and not args.sans_reecriture
+    suffixe = "_reecriture" if reecrire else ""
+
     if not GROQ_API_KEY:
         raise SystemExit("GROQ_API_KEY manquante dans .env")
     questions = json.loads(QUESTIONS.read_text(encoding="utf-8"))
@@ -210,21 +219,23 @@ def main() -> None:
     lignes = []
     for i, q in enumerate(questions, start=1):
         print(f"[{i}/{len(questions)}] {q['id']} - {q['question']}")
-        ligne = evaluer_question(client, q)
+        ligne = evaluer_question(client, q, reecrire)
+        if ligne["question_reecrite"]:
+            print(f"   réécrite : {ligne['question_reecrite']}")
         print(f"   recall@5={ligne['recall5']} cites={ligne['articles_cites']} "
               f"abstention={ligne['abstention']} exactitude={ligne['exactitude']}")
         lignes.append(ligne)
         time.sleep(PAUSE_ENTRE_QUESTIONS)
 
-    with (DOSSIER / "resultats_eval.csv").open("w", newline="", encoding="utf-8-sig") as f:
+    with (DOSSIER / f"resultats_eval{suffixe}.csv").open("w", newline="", encoding="utf-8-sig") as f:
         writer = csv.DictWriter(f, fieldnames=list(lignes[0].keys()), delimiter=";")
         writer.writeheader()
         writer.writerows(lignes)
 
-    resume = ecrire_resume(lignes)
-    (DOSSIER / "resume_eval.md").write_text(resume, encoding="utf-8")
+    resume = ecrire_resume(lignes, reecrire)
+    (DOSSIER / f"resume_eval{suffixe}.md").write_text(resume, encoding="utf-8")
     print("\n" + resume)
-    print("Détail : reports/resultats_eval.csv — Résumé : reports/resume_eval.md")
+    print(f"Détail : reports/resultats_eval{suffixe}.csv — Résumé : reports/resume_eval{suffixe}.md")
 
 
 if __name__ == "__main__":

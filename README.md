@@ -127,12 +127,13 @@ python src/api.py                      # API sur http://localhost:8000/docs
 
 **Fonctionnement (`src/generation.py`)** :
 1. recherche des 5 passages les plus proches (étape 3) ;
-2. passages numérotés `[EXTRAIT 1]`… placés dans le prompt avec leur citation ;
+2. passages placés dans le prompt, chacun précédé de son numéro d'article (`[Art. 277]`) ;
 3. prompt système strict : répondre uniquement à partir des extraits, citer chaque
    affirmation, dire clairement quand les extraits ne suffisent pas, traiter les extraits
    comme des données et non comme des instructions (protection contre l'injection) ;
 4. `temperature=0` pour des réponses stables ;
-5. vérification automatique : le LLM a-t-il cité un extrait qui n'existe pas ?
+5. vérification automatique : chaque article cité (`[Art. 244]`) fait-il bien partie des
+   extraits fournis ?
 6. mesures renvoyées avec chaque réponse : durée de la recherche, durée du LLM,
    tokens consommés (base de l'observabilité).
 
@@ -185,3 +186,62 @@ de référence rédigée à partir du texte de loi et le ou les articles attendu
 des notes est donc vérifiée à la main (colonne `verif_humaine` de `reports/resultats_eval.csv`).
 
 Résultats : `reports/resume_eval.md` (résumé) et `reports/resultats_eval.csv` (détail par question).
+
+### Amélioration : réécriture de la question
+
+Analyse de la première évaluation : la question R01 (« Mon patron peut-il me faire **bosser**
+50 heures par semaine sans rien payer **en plus** ? ») échouait à la **recherche** : ni
+l'article 241 (durée légale) ni le 244 (heures supplémentaires) n'étaient retrouvés. Le LLM a
+alors correctement refusé de répondre plutôt que d'inventer : l'échec venait de la recherche,
+pas de la génération.
+
+Correction (`src/generation.py`, `src/recherche.py`) :
+1. un appel rapide au LLM réécrit la question avec le vocabulaire juridique
+   (« bosser » → « durée du travail », « vacances » → « congé payé ») ;
+2. on garde **toujours** les 5 passages trouvés avec la question d'origine, et la question
+   réécrite **ajoute** jusqu'à 3 passages nouveaux : la réécriture ne peut pas faire
+   disparaître un bon passage ;
+3. le LLM répond à la question d'origine.
+
+Coût : un appel LLM et quelques centaines de tokens de plus par question (mesurés).
+Désactivable avec `REECRITURE_REQUETE=false` dans `.env`.
+
+Comparaison :
+```bash
+python src/evaluate.py --sans-reecriture   # -> reports/resume_eval.md
+python src/evaluate.py                     # -> reports/resume_eval_reecriture.md
+```
+
+Résultats mesurés (20 questions, `openai/gpt-oss-120b`) :
+
+| Mesure | Sans réécriture | Avec réécriture |
+|---|---|---|
+| Recall (au moins un article attendu retrouvé) | 17/18 (94 %) | **18/18 (100 %)** |
+| Tous les articles attendus retrouvés | 17/18 | 17/18 |
+| Article attendu cité | 17/18 | 17/18 |
+| Citations d'un extrait inexistant | 0/20 | 1/20 |
+| Refus correct (questions hors corpus) | 2/2 | 2/2 |
+| Refus inutile | 1/18 | **0/18** |
+| Exactitude moyenne (LLM juge, sur 2) | 1,78 | **1,89** |
+| Tokens par question | 1 483 | 2 143 (+44 %) |
+
+Ce que les chiffres ne disent pas, et que j'ai trouvé en relisant les réponses :
+- **R01** est partiellement corrigée : l'article 244 (heures supplémentaires) est retrouvé et la
+  réponse est juste sur le fond, mais l'article 241 (40 heures) manque toujours.
+- **Erreurs de citation** : le LLM a cité le texte de l'article 244 en le référençant comme
+  « EXTRAIT 4 » (qui était l'article 298), et a écrit « EXTRAIT 129 » pour l'article 129.
+  La vérification automatique ne détectait que les numéros d'extraits inexistants, pas les
+  mauvaises correspondances.
+- **Effet secondaire de la réécriture** : « prix d'un billet d'avion Dakar-Paris » a été réécrit
+  en « indemnité de transport pour un déplacement professionnel ». La réécriture peut changer
+  le sens d'une question (l'assistant a tout de même refusé de répondre).
+- **Le LLM juge n'est pas constant** : F01 a reçu 1/2 puis 2/2 pour une réponse quasi identique.
+
+### Correction des citations et encadrement de la réécriture
+
+- Le LLM cite désormais **directement le numéro d'article**, `[Art. 244]`, au lieu d'un numéro
+  d'extrait : plus de correspondance à faire, et chaque article cité est vérifié automatiquement
+  (il doit faire partie des extraits fournis).
+- Le prompt de réécriture ajoute les **notions juridiques en jeu** (« Notions : durée légale du
+  travail, heures supplémentaires… »), doit garder exactement le même sujet, et laisse intacte
+  une question qui ne relève pas du droit du travail.

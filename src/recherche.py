@@ -39,6 +39,25 @@ def rechercher(question: str, k: int = 5) -> list[dict]:
     return [dict(zip(colonnes, l)) for l in lignes]
 
 
+def rechercher_plusieurs(requetes: list[str], k: int = 5, k_supp: int = 3) -> list[dict]:
+    """Recherche avec la question d'origine (requetes[0]) puis avec ses reformulations.
+
+    On garde TOUJOURS les k passages de la question d'origine, puis on AJOUTE jusqu'à
+    k_supp passages nouveaux trouvés grâce aux reformulations (sans doublons).
+    Ainsi la réécriture ne peut pas faire disparaître un bon passage : elle ne peut
+    qu'en apporter de nouveaux (au prix de quelques tokens de plus dans le prompt)."""
+    resultats = rechercher(requetes[0], k)
+    vus = {p["id"] for p in resultats}
+    for requete in requetes[1:]:
+        for p in rechercher(requete, k):
+            if len(resultats) >= k + k_supp:
+                break
+            if p["id"] not in vus:
+                vus.add(p["id"])
+                resultats.append(p)
+    return resultats
+
+
 def main() -> None:
     question = " ".join(sys.argv[1:]) or "Quelle est la durée du congé de maternité ?"
     print(f"Question : {question}\n")

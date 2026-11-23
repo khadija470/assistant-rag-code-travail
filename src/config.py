@@ -34,3 +34,7 @@ GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
 
 # Nombre de passages envoyés au LLM
 TOP_K = 5
+
+# Réécriture de la question avant la recherche (amélioration testée à l'étape 5).
+# Mettre REECRITURE_REQUETE=false dans .env pour la désactiver.
+REECRITURE_REQUETE = os.getenv("REECRITURE_REQUETE", "true").lower() == "true"
